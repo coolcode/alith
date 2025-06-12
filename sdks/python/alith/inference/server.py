@@ -7,7 +7,8 @@ def run(
     port: int = 8000,
     engine_type: str = "llamacpp",
     *,
-    model: str
+    model: str,
+    settlement: bool = False
 ):
     """Run an inference server with the given address and engine type."""
     if engine_type not in ["llamacpp"]:
@@ -22,6 +23,12 @@ def run(
         server_settings = ServerSettings(host=host, port=port)
         model_settings = [ModelSettings(model=model)]
         app = create_app(server_settings=server_settings, model_settings=model_settings)
+        if settlement:
+            from .settlement import ValidationMiddleware, TokenBillingMiddleware
+
+            app.add_middleware(ValidationMiddleware)
+            app.add_middleware(TokenBillingMiddleware)
+
         return uvicorn.run(
             app,
             host=server_settings.host,
