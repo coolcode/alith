@@ -1,5 +1,6 @@
-import uvicorn
 import argparse
+
+import uvicorn
 
 
 def run(
@@ -15,16 +16,13 @@ def run(
         raise
     if engine_type == "llamacpp":
         from llama_cpp.server.app import create_app
-        from llama_cpp.server.settings import (
-            ServerSettings,
-            ModelSettings,
-        )
+        from llama_cpp.server.settings import ModelSettings, ServerSettings
 
         server_settings = ServerSettings(host=host, port=port)
         model_settings = [ModelSettings(model=model)]
         app = create_app(server_settings=server_settings, model_settings=model_settings)
         if settlement:
-            from .settlement import ValidationMiddleware, TokenBillingMiddleware
+            from .settlement import TokenBillingMiddleware, ValidationMiddleware
 
             app.add_middleware(ValidationMiddleware)
             app.add_middleware(TokenBillingMiddleware)
