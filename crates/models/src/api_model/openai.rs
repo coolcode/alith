@@ -12,6 +12,7 @@ impl ApiLLMModel {
             "gpt-4o" => Self::gpt_4_o(),
             "gpt-4o-mini" => Self::gpt_4_o_mini(),
             "gpt-4.1" => Self::gpt_4_1(),
+            "gpt-4.1-nano" => Self::gpt_4_1_nano(),
             "gpt-4.5" => Self::gpt_4_5(),
             _ => panic!("Model ID ({model_id}) not found for ApiLLMModel"),
         }
@@ -165,6 +166,23 @@ impl ApiLLMModel {
             },
             cost_per_m_in_tokens: 30.00,
             cost_per_m_out_tokens: 60.00,
+            tokens_per_message: 3,
+            tokens_per_name: Some(1),
+        }
+    }
+
+    pub fn gpt_4_1_nano() -> ApiLLMModel {
+        let model_id = "gpt-4.1-nano".to_string();
+        let tokenizer = model_tokenizer("gpt-4.1");
+        ApiLLMModel {
+            model_base: LLMModelBase {
+                model_id,
+                model_ctx_size: 1000000,
+                inference_ctx_size: 4096,
+                tokenizer,
+            },
+            cost_per_m_in_tokens: 0.10,
+            cost_per_m_out_tokens: 0.40,
             tokens_per_message: 3,
             tokens_per_name: Some(1),
         }
